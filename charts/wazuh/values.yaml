@@ -292,6 +292,8 @@ dashboard:
   ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
   ##
   ingress:
+    ## @param dashboard.ingress.enabled Defines if the ingress is used.
+    ##
     enabled: false
     ## @param dashboard.ingress.className Defines the ingress class name used.
     ##
@@ -433,6 +435,61 @@ wazuh:
       ports:
         registration: 1515
         api: 55000
+    ## @params wazuh.master.ingress Parameters for the ingress routes to the master.
+    ##
+    ingress:
+      ## @params wazuh.master.ingress.api Parameters for the ingress routes to the api.
+      ##
+      api:
+        ## @param wazuh.master.ingress.api.enabled Defines if the ingress is used.
+        ##
+        enabled: false
+        ## @param wazuh.master.ingress.api.className Defines the ingress class name used.
+        ##
+        className: ""
+        ## @param wazuh.master.ingress.api.tls Allows to use specific tls certificate.
+        ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+        ## Example:
+        ##  - secretName: wazuh-api-tls
+        ##    hosts:
+        ##      - api.wazuh.example.com
+        ##
+        tls: []
+        ## @param wazuh.master.ingress.api.annotations Used for detailed configuration.
+        ## Ref: https://docs.nginx.com/nginx-ingress-controller/configuration/ingress-resources/advanced-configuration-with-annotations/
+        ## Eg: cert-manager.io/cluster-issuer: letsencrypt-prod
+        ##
+        annotations: {}
+        ## @params wazuh.master.ingress.api.host Defines the hostname and URL under which the dashboard gets
+        ## exposed.
+        ##
+        host: "api.wazuh.example.com"
+      ## @params wazuh.master.ingress.registration Parameters for the ingress routes to the registration.
+      ##
+      registration:
+        ## @param wazuh.master.ingress.registration.enabled Defines if the ingress is used.
+        ##
+        enabled: false
+        ## @param wazuh.master.ingress.registration.className Defines the ingress class name used.
+        ##
+        className: ""
+        ## @param wazuh.master.ingress.registration.tls Allows to use specific tls certificate.
+        ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+        ## Example:
+        ##  - secretName: wazuh-registration-tls
+        ##    hosts:
+        ##      - registration.wazuh.example.com
+        ##
+        tls: []
+        ## @param wazuh.master.ingress.registration.annotations Used for detailed configuration.
+        ## Ref: https://docs.nginx.com/nginx-ingress-controller/configuration/ingress-resources/advanced-configuration-with-annotations/
+        ## Eg: cert-manager.io/cluster-issuer: letsencrypt-prod
+        ##
+        annotations: {}
+        ## @params wazuh.master.ingress.registration.host Defines the hostname and URL under which the dashboard gets
+        ## exposed.
+        ##
+        host: "registration.wazuh.example.com"
     ## @params wazuh.master.resources Allows to configure the resources allocated to the master.
     ## Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ##
@@ -493,6 +550,32 @@ wazuh:
       annotations: {}
       ports:
         agentEvents: 1514
+    ## @params wazuh.worker.ingress Parameters for the ingress routes to the worker.
+    ##
+    ingress:
+      ## @param wazuh.worker.ingress.enabled Defines if the ingress is used.
+      ##
+      enabled: false
+      ## @param wazuh.worker.ingress.className Defines the ingress class name used.
+      ##
+      className: ""
+      ## @param wazuh.worker.ingress.tls Allows to use specific tls certificate.
+      ## Ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+      ## Example:
+      ##  - secretName: wazuh-manager-tls
+      ##    hosts:
+      ##      - manager.wazuh.example.com
+      ##
+      tls: []
+      ## @param wazuh.worker.ingress.annotations Used for detailed configuration.
+      ## Ref: https://docs.nginx.com/nginx-ingress-controller/configuration/ingress-resources/advanced-configuration-with-annotations/
+      ## Eg: cert-manager.io/cluster-issuer: letsencrypt-prod
+      ##
+      annotations: {}
+      ## @params wazuh.worker.ingress.host Defines the hostname and URL under which the dashboard gets
+      ## exposed.
+      ##
+      host: "manager.wazuh.example.com"
     ## @params wazuh.worker.resources Allows to configure the resources allocated to the worker.
     ## Ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ##

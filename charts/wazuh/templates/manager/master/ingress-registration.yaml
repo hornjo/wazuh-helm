@@ -1,0 +1,38 @@
+{{- if .Values.wazuh.master.ingress.registration.enabled -}}
+apiVersion:  networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "wazuh.fullname" . }}-registration
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "wazuh.fullname" . }}-registration
+  annotations:
+    {{- toYaml .Values.wazuh.master.ingress.registration.annotations | nindent 4 }}
+spec:
+  {{- with .Values.wazuh.master.ingress.registration.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- with .Values.wazuh.master.ingress.registration.tls }}
+  tls:
+    {{- range . }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ tpl . $ | quote }}
+        {{- end }}
+      {{- with .secretName }}
+      secretName: {{ . }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.wazuh.master.ingress.registration.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: wazuh
+                port:
+                  number: {{ .Values.wazuh.master.service.ports.registration }}
+            path: /
+            pathType: Prefix
+{{- end -}}

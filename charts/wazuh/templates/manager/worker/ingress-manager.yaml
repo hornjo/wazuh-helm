@@ -1,0 +1,38 @@
+{{- if .Values.wazuh.worker.ingress.enabled -}}
+apiVersion:  networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "wazuh.fullname" . }}-manager
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "wazuh.fullname" . }}-manager
+  annotations:
+    {{- toYaml .Values.wazuh.worker.ingress.annotations | nindent 4 }}
+spec:
+  {{- with .Values.wazuh.worker.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- with .Values.wazuh.worker.ingress.tls }}
+  tls:
+    {{- range . }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ tpl . $ | quote }}
+        {{- end }}
+      {{- with .secretName }}
+      secretName: {{ . }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.wazuh.worker.ingress.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ include "wazuh.fullname" . }}-manager-worker
+                port:
+                  number: {{ .Values.wazuh.worker.service.ports.agentEvents }}
+            path: /
+            pathType: Prefix
+{{- end -}}
